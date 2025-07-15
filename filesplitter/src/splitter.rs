@@ -1,7 +1,14 @@
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Read, Write};
+use std::fs;
+use std::path::Path;
 
 pub fn split_file_into_n_parts(path: &str, num_parts: usize, output_dir: &str) -> std::io::Result<()> {
+    let output_path = Path::new(output_dir);
+    if output_path.exists() {
+        fs::remove_dir_all(output_path)?;
+    }
+    fs::create_dir_all(output_path)?;
     let file = File::open(path)?;
     let metadata = file.metadata()?;
     let file_size = metadata.len() as usize;
@@ -26,4 +33,3 @@ pub fn split_file_into_n_parts(path: &str, num_parts: usize, output_dir: &str) -
     }
     Ok(())
 }
-
